@@ -1,0 +1,18 @@
+linters:
+    enable:
+      - errcheck      # ensures you don't ignore errors
+      - gosimple      # simplify code suggestions
+      - govet         # reports suspicious constructs
+      - ineffassign   # detects unused assignments
+      - staticcheck   # advanced static analysis
+      - unused        # finds unused code
+      - gofmt         # enforces formatting
+      - goimports     # enforces import ordering
+      - misspell      # catches typos in comments/strings
+
+  linters-settings:
+    gofmt:
+      simplify: true
+
+  run:
+    timeout: 5m

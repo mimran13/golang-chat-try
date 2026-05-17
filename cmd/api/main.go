@@ -33,11 +33,13 @@ func main() {
 	db := setupDB(*cfg)
 	defer db.Close()
 
+	c := NewContainer(db)
+
 	var shuttingDown atomic.Bool
 
 	server := &http.Server{
 		Addr:              ":8090",
-		Handler:           setupRoutes(db),
+		Handler:           setupRoutes(c),
 		ReadTimeout:       5 * time.Second,
 		ReadHeaderTimeout: 2 * time.Second,
 		WriteTimeout:      10 * time.Second,
