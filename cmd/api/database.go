@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golang-migrate/migrate/v4"
@@ -28,6 +29,9 @@ func connectDB(dbConfig config.DBConfig) *sql.DB {
           os.Exit(1)
       }
       slog.Info("database connected")
+      db.SetMaxOpenConns(25)
+      db.SetMaxIdleConns(10)
+      db.SetConnMaxLifetime(5 * time.Minute)
       return db
   }
   

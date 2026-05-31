@@ -1,26 +1,32 @@
 package handler
 
 import (
-	"encoding/json"
+	"errors"
+	"go-chat/internal/apperror"
+	"go-chat/internal/response"
 	"go-chat/internal/user"
 	"net/http"
 )
 
-  type UserHandler struct {
-      svc *user.UserService
-  }
+type UserHandler struct {
+	svc *user.UserService
+}
 
-  func NewUserHandler(svc *user.UserService) *UserHandler {
-      return &UserHandler{svc: svc}
-  }
+func NewUserHandler(svc *user.UserService) *UserHandler {
+	return &UserHandler{svc: svc}
+}
 
-  func (h *UserHandler) GetAll(w http.ResponseWriter, r *http.Request) {
-      users, err := h.svc.GetAllUsers()
-      if err != nil {
-          http.Error(w, "failed to fetch users", http.StatusInternalServerError)
-          return
-      }
+func (h *UserHandler) GetAll(w http.ResponseWriter, r *http.Request) {
+	users, err := h.svc.GetAllUsers(r.Context())
+	if err != nil {
+		var appErr *apperror.AppError
+		if errors.As(err, &appErr) {
+			response.WriteError(w, appErr.Status, appErr.Code, appErr.Message)
+			return
+		}
+		response.WriteError(w, http.StatusInternalServerError, "INTERNAL_SERVER_ERROR", "something went wrong")
+		return
+	}
 
-      w.Header().Set("Content-Type", "application/json")
-      json.NewEncoder(w).Encode(users)
-  }
+	response.WriteJSON(w, http.StatusOK, users)
+}

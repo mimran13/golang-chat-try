@@ -1,6 +1,7 @@
 package user
 
 import (
+	"context"
 	"database/sql"
 	"time"
 )
@@ -20,8 +21,8 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 	return &UserRepository{db: db}
 } 
 
-func (r *UserRepository) GetAll() ([]User, error) {
-rows, err := r.db.Query("SELECT id, username, email, created_at FROM users")                                                                                                                                             
+func (r *UserRepository) GetAll(ctx context.Context) ([]User, error) {
+rows, err := r.db.QueryContext(ctx, "SELECT id, username, email, created_at FROM users")                                                                                                                                             
   if err != nil {                                                                                                                                                                                                          
       return nil, err                                                                                                                                                                                                      
   }                                                                                                                                                                                                                      
