@@ -2,6 +2,7 @@ package main
 
 import (
 	"go-chat/internal/middlewares"
+	"sync/atomic"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -9,7 +10,7 @@ import (
 	"github.com/rs/cors"
 )
 
-func setupRoutes(c *Container) *chi.Mux {
+func setupRoutes(c *Container, shuttingDown *atomic.Bool) *chi.Mux {
 	r := chi.NewRouter()
 
 	corsMiddleware := cors.New(cors.Options{
@@ -24,7 +25,9 @@ func setupRoutes(c *Container) *chi.Mux {
 	r.Use(middleware.Recoverer)
 	r.Use(middlewares.TimeoutMiddleware(5 * time.Second))
 	r.Use(middlewares.RequestIDMiddleware)
-
+	r.Use(middlewares.RateLimitMiddleware(100, 20))
+	r.Use(middlewares.ShutdownMiddleware(shuttingDown))
+	
 	r.Get("/health", c.HealthHandler.Health)
 
 	r.Route("/api/v1", func(r chi.Router) {

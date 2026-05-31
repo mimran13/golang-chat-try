@@ -38,8 +38,8 @@ func main() {
 	var shuttingDown atomic.Bool
 
 	server := &http.Server{
-		Addr:              ":"+cfg.App.Port,
-		Handler:           setupRoutes(c),
+		Addr:              ":" + cfg.App.Port,
+		Handler:           setupRoutes(c, &shuttingDown),
 		ReadTimeout:       5 * time.Second,
 		ReadHeaderTimeout: 2 * time.Second,
 		WriteTimeout:      10 * time.Second,
