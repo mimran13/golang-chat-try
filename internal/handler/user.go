@@ -28,5 +28,5 @@ func (h *UserHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.WriteJSON(w, http.StatusOK, users)
+	response.WriteSuccess(w, http.StatusOK, users, nil)
 }

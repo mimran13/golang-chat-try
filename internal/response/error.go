@@ -26,3 +26,12 @@ func WriteJSON(w http.ResponseWriter, status int, data any) {
 	w.WriteHeader(status)
 	json.NewEncoder(w).Encode(data)
 }
+
+type SuccessResponse struct {
+	Data any `json:"data"`
+	Meta any `json:"meta,omitempty"`
+}
+
+func WriteSuccess(w http.ResponseWriter, status int, data any, meta any) {
+	WriteJSON(w, status, SuccessResponse{Data: data, Meta: meta})
+}
