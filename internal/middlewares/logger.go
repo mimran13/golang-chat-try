@@ -21,8 +21,7 @@ import (
               "status", ww.Status(),          
               "duration", time.Since(start),
 			  "ip", r.RemoteAddr,
-              "request_id", requestID                                                                                                                                                                        
+              "request_id", requestID,
           )                                                                                                                                                                                                              
       })                                                                                                                                                                                                                   
   }
-  
