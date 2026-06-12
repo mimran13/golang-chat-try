@@ -2,29 +2,46 @@ package response
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
+
+	"go-chat/internal/apperror"
 )
 
 type ErrorResponse struct {
-	Status  int    `json:"status"`
-	Message string `json:"message"`
-	Error   string `json:"error"`
+	Status  int               `json:"status"`
+	Message string            `json:"message,omitempty"`
+	Error   string            `json:"error,omitempty"`
+	Fields  map[string]string `json:"fields,omitempty"`
 }
 
 func WriteError(w http.ResponseWriter, status int, message string, errorMessage string) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(ErrorResponse{
+	writeJSON(w, status, ErrorResponse{
 		Status:  status,
-		Error:   errorMessage,
 		Message: message,
+		Error:   errorMessage,
+	})
+}
+
+func WriteAppError(w http.ResponseWriter, e *apperror.AppError) {
+	writeJSON(w, e.Status, ErrorResponse{
+		Status:  e.Status,
+		Message: e.Code,
+		Error:   e.Message,
+		Fields:  e.Fields,
 	})
 }
 
 func WriteJSON(w http.ResponseWriter, status int, data any) {
+	writeJSON(w, status, data)
+}
+
+func writeJSON(w http.ResponseWriter, status int, data any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(data)
+	if err := json.NewEncoder(w).Encode(data); err != nil {
+		slog.Error("failed to encode response", "error", err)
+	}
 }
 
 type SuccessResponse struct {

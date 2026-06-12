@@ -9,7 +9,7 @@ import (
 
 type Container struct {
 	HealthHandler *handler.HealthHandler
-	UserHandler *handler.UserHandler
+	UserHandler   *handler.UserHandler
 }
 
 func NewContainer(db *sql.DB) *Container {
@@ -19,6 +19,6 @@ func NewContainer(db *sql.DB) *Container {
 
 	return &Container{
 		HealthHandler: healthHandler,
-		UserHandler: handler.NewUserHandler(userSvc),
+		UserHandler:   handler.NewUserHandler(userSvc),
 	}
 }

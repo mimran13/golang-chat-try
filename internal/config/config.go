@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
@@ -11,6 +12,7 @@ import (
 type Config struct {
 	App      AppConfig
 	Database DBConfig
+	CORS     CORSConfig
 }
 
 type AppConfig struct {
@@ -27,18 +29,22 @@ type DBConfig struct {
 	Name     string
 }
 
+type CORSConfig struct {
+	AllowedOrigins []string
+}
+
 func LoadConfig() (*Config, error) {
 	slog.Info("Loading application config...")
 
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
 		return nil, fmt.Errorf("failed to load .env file: %w", err)
 	}
 
 	config := &Config{
 		App: AppConfig{
-			Name: os.Getenv("APP_NAME"),
-			Env:  os.Getenv("APP_ENV"),
-			Port: os.Getenv("PORT"),
+			Name: getEnv("APP_NAME", "go-chat"),
+			Env:  getEnv("APP_ENV", EnvDevelopment),
+			Port: getEnv("PORT", "8080"),
 		},
 		Database: DBConfig{
 			Host:     os.Getenv("DATABASE_HOST"),
@@ -46,6 +52,9 @@ func LoadConfig() (*Config, error) {
 			User:     os.Getenv("DATABASE_USER"),
 			Password: os.Getenv("DATABASE_PASSWORD"),
 			Name:     os.Getenv("DATABASE_NAME"),
+		},
+		CORS: CORSConfig{
+			AllowedOrigins: splitCSV(getEnv("CORS_ALLOWED_ORIGINS", "http://localhost:3000")),
 		},
 	}
 
@@ -56,19 +65,25 @@ func LoadConfig() (*Config, error) {
 	return config, nil
 }
 
-func (c *Config) validate() error {
-	// App validation
-	if c.App.Name == "" {
-		return fmt.Errorf("APP_NAME is required")
+func getEnv(key, fallback string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
 	}
-	if c.App.Env == "" {
-		return fmt.Errorf("APP_ENV is required")
-	}
-	if c.App.Port == "" {
-		return fmt.Errorf("PORT is required")
-	}
+	return fallback
+}
 
-	// Database validation
+func splitCSV(s string) []string {
+	parts := strings.Split(s, ",")
+	out := make([]string, 0, len(parts))
+	for _, p := range parts {
+		if p = strings.TrimSpace(p); p != "" {
+			out = append(out, p)
+		}
+	}
+	return out
+}
+
+func (c *Config) validate() error {
 	if c.Database.Host == "" {
 		return fmt.Errorf("DATABASE_HOST is required")
 	}
@@ -84,6 +99,5 @@ func (c *Config) validate() error {
 	if c.Database.Name == "" {
 		return fmt.Errorf("DATABASE_NAME is required")
 	}
-
 	return nil
 }

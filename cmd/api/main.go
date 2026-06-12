@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"log/slog"
 	"net/http"
 	"os"
@@ -12,7 +13,6 @@ import (
 	"time"
 
 	"go-chat/internal/config"
-	"go-chat/internal/shared"
 )
 
 func main() {
@@ -23,15 +23,19 @@ func main() {
 	)
 	defer stop()
 
-	cfg , err := config.LoadConfig()
+	cfg, err := config.LoadConfig()
 	if err != nil {
 		slog.Error("failed to load config", "error", err)
 		os.Exit(1)
 	}
 
 	setLogger(cfg.App.Env)
-	db := setupDB(*cfg)
-	defer db.Close()
+	db, err := setupDB(*cfg)
+	if err != nil {
+		slog.Error("db setup failed", "error", err)
+		os.Exit(1)
+	}
+	defer func() { _ = db.Close() }()
 
 	c := NewContainer(db)
 
@@ -39,12 +43,20 @@ func main() {
 
 	server := &http.Server{
 		Addr:              ":" + cfg.App.Port,
-		Handler:           setupRoutes(c, &shuttingDown),
+		Handler:           setupRoutes(c, &shuttingDown, cfg.CORS.AllowedOrigins),
 		ReadTimeout:       5 * time.Second,
 		ReadHeaderTimeout: 2 * time.Second,
 		WriteTimeout:      10 * time.Second,
 		IdleTimeout:       60 * time.Second,
 	}
+
+	slog.Info("Server starting on port..." + cfg.App.Port)
+	go func() {
+		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			slog.Error("http server", "error", err)
+			stop()
+		}
+	}()
 
 	<-ctx.Done()
 	slog.Info("shutdown started")
@@ -56,7 +68,7 @@ func main() {
 	slog.Info("stopping http server")
 	if err := server.Shutdown(shutdownCtx); err != nil {
 		slog.Error("graceful shutdown failed", "error", err)
-		server.Close()
+		_ = server.Close()
 	}
 
 	slog.Info("shutdown complete")
@@ -65,19 +77,21 @@ func main() {
 func setLogger(appEnv string) {
 	level := slog.LevelInfo
 
-	if appEnv == shared.EnvDevelopment {
+	if appEnv == config.EnvDevelopment {
 		level = slog.LevelDebug
 	}
 
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{                                                                                                                                                
-      Level: level,                       
-  	}))
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: level,
+	}))
 
- 	 slog.SetDefault(logger)
+	slog.SetDefault(logger)
 }
 
-func setupDB(cfg config.Config) *sql.DB {
-	runMigrations(cfg.Database)
-	db := connectDB(cfg.Database)
-	return db;
+func setupDB(cfg config.Config) (*sql.DB, error) {
+	db, err := connectDB(cfg.Database)
+	if err != nil {
+		return nil, err
+	}
+	return db, nil
 }

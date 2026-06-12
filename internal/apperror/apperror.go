@@ -6,6 +6,7 @@ type AppError struct {
 	Code    string
 	Message string
 	Status  int
+	Fields  map[string]string
 }
 
 func (e *AppError) Error() string {
@@ -26,6 +27,10 @@ func Forbidden(message string) *AppError {
 
 func BadRequest(message string) *AppError {
 	return &AppError{Code: "BAD_REQUEST", Message: message, Status: http.StatusBadRequest}
+}
+
+func BadRequestFields(fields map[string]string) *AppError {
+	return &AppError{Code: "BAD_REQUEST_FIELDS", Message: "validation failed", Fields: fields, Status: http.StatusBadRequest}
 }
 
 func Internal(message string) *AppError {
