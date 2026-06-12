@@ -17,6 +17,12 @@ type UserRepository struct {
 	db *sql.DB
 }
 
+type RegisterUser struct {
+	Username string
+	Password string
+	Email string
+}
+
 func NewUserRepository(db *sql.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
@@ -38,4 +44,32 @@ func (r *UserRepository) GetAll(ctx context.Context) ([]User, error) {
 	}
 
 	return users, rows.Err()
+}
+
+
+func (r *UserRepository) RegisterUser(ctx context.Context, user RegisterUser) (User, error) {
+	
+	row, err := r.db.ExecContext(ctx, "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
+	 user.Username, user.Email, user.Password,
+	)
+
+	if err != nil {
+    	return User{}, err
+	}
+
+	userId, err := row.LastInsertId()
+	if err != nil {
+		return User{}, err
+	}
+
+	var u User
+	errNewUser := r.db.QueryRowContext(ctx,
+		"SELECT id, username, email, created_at FROM users WHERE id = ?",
+		userId,
+	).Scan(&u.ID, &u.Username, &u.Email, &u.CreatedAt)
+	if errNewUser != nil {
+		return User{}, errNewUser
+	}
+
+	return u, nil
 }

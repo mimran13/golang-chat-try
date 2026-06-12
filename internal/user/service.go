@@ -2,11 +2,16 @@ package user
 
 import (
 	"context"
+	"log/slog"
+
 	"go-chat/internal/user/dto"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type userRepository interface {
 	GetAll(ctx context.Context) ([]User, error)
+	RegisterUser(ctx context.Context, user RegisterUser) (User, error)
 }
 
 type UserService struct {
@@ -33,4 +38,31 @@ func (svc *UserService) GetAllUsers(ctx context.Context) ([]dto.UserResponse, er
 	}
 
 	return response, nil
+}
+
+func (svc *UserService) RegisterUser(ctx context.Context, req dto.CreateUserRequest) (dto.UserResponse, error) {
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return dto.UserResponse{}, err
+	}
+
+	repoInput := RegisterUser{
+		Username: req.Username,
+		Email:    req.Email,
+		Password: string(passwordHash),
+	}
+
+	created, err := svc.repo.RegisterUser(ctx, repoInput)
+	if err != nil {
+		return dto.UserResponse{}, err
+	}
+
+	slog.Info("user created", "id", created.ID)
+
+	return dto.UserResponse{
+		ID:        created.ID,
+		Username:  created.Username,
+		Email:     created.Email,
+		CreatedAt: created.CreatedAt,
+	}, nil
 }

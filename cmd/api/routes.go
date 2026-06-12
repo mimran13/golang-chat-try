@@ -36,6 +36,7 @@ func setupRoutes(c *Container, shuttingDown *atomic.Bool, allowedOrigins []strin
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Get("/users", c.UserHandler.GetAll)
+		r.Post("/auth/register", c.UserHandler.CreateUser)
 	})
 
 	return r

@@ -13,6 +13,7 @@ type Config struct {
 	App      AppConfig
 	Database DBConfig
 	CORS     CORSConfig
+	Auth 	 AuthConfig
 }
 
 type AppConfig struct {
@@ -31,6 +32,10 @@ type DBConfig struct {
 
 type CORSConfig struct {
 	AllowedOrigins []string
+}
+
+type AuthConfig struct {
+	JWT_SECRET string
 }
 
 func LoadConfig() (*Config, error) {
@@ -55,6 +60,9 @@ func LoadConfig() (*Config, error) {
 		},
 		CORS: CORSConfig{
 			AllowedOrigins: splitCSV(getEnv("CORS_ALLOWED_ORIGINS", "http://localhost:3000")),
+		},
+		Auth: AuthConfig{
+			JWT_SECRET: os.Getenv("JWT_SECRET"),
 		},
 	}
 
