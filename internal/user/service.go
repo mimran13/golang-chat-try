@@ -4,6 +4,7 @@ import (
 	"context"
 	"log/slog"
 
+	"go-chat/internal/apperror"
 	"go-chat/internal/user/dto"
 
 	"golang.org/x/crypto/bcrypt"
@@ -11,7 +12,7 @@ import (
 
 type userRepository interface {
 	GetAll(ctx context.Context) ([]User, error)
-	RegisterUser(ctx context.Context, user RegisterUser) (User, error)
+	Create(ctx context.Context, input CreateUserInput) (User, error)
 }
 
 type UserService struct {
@@ -27,14 +28,10 @@ func (svc *UserService) GetAllUsers(ctx context.Context) ([]dto.UserResponse, er
 	if err != nil {
 		return nil, err
 	}
+
 	response := make([]dto.UserResponse, len(users))
 	for i, u := range users {
-		response[i] = dto.UserResponse{
-			ID:        u.ID,
-			Username:  u.Username,
-			Email:     u.Email,
-			CreatedAt: u.CreatedAt,
-		}
+		response[i] = toUserResponse(u)
 	}
 
 	return response, nil
@@ -43,26 +40,30 @@ func (svc *UserService) GetAllUsers(ctx context.Context) ([]dto.UserResponse, er
 func (svc *UserService) RegisterUser(ctx context.Context, req dto.CreateUserRequest) (dto.UserResponse, error) {
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return dto.UserResponse{}, err
+		return dto.UserResponse{}, apperror.Internal("failed to hash password")
 	}
 
-	repoInput := RegisterUser{
-		Username: req.Username,
-		Email:    req.Email,
-		Password: string(passwordHash),
+	input := CreateUserInput{
+		Username:     req.Username,
+		Email:        req.Email,
+		PasswordHash: string(passwordHash),
 	}
 
-	created, err := svc.repo.RegisterUser(ctx, repoInput)
+	created, err := svc.repo.Create(ctx, input)
 	if err != nil {
 		return dto.UserResponse{}, err
 	}
 
 	slog.Info("user created", "id", created.ID)
 
+	return toUserResponse(created), nil
+}
+
+func toUserResponse(u User) dto.UserResponse {
 	return dto.UserResponse{
-		ID:        created.ID,
-		Username:  created.Username,
-		Email:     created.Email,
-		CreatedAt: created.CreatedAt,
-	}, nil
+		ID:        u.ID,
+		Username:  u.Username,
+		Email:     u.Email,
+		CreatedAt: u.CreatedAt,
+	}
 }
