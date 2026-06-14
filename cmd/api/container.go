@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 
+	"go-chat/internal/auth"
+	"go-chat/internal/config"
 	"go-chat/internal/handler"
 	"go-chat/internal/user"
 )
@@ -12,10 +14,11 @@ type Container struct {
 	UserHandler   *handler.UserHandler
 }
 
-func NewContainer(db *sql.DB) *Container {
+func NewContainer(db *sql.DB, config *config.Config) *Container {
 	healthHandler := handler.NewHealthHandler(db)
+	authService := auth.NewAuthService(config.Auth)
 	userRepo := user.NewUserRepository(db)
-	userSvc := user.NewUserService(userRepo)
+	userSvc := user.NewUserService(userRepo, authService)
 
 	return &Container{
 		HealthHandler: healthHandler,

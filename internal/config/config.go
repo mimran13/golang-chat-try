@@ -107,5 +107,8 @@ func (c *Config) validate() error {
 	if c.Database.Name == "" {
 		return fmt.Errorf("DATABASE_NAME is required")
 	}
+	if c.Auth.JWT_SECRET == "" {
+		return fmt.Errorf("JWT_SECRET is required")
+	}
 	return nil
 }

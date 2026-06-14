@@ -15,3 +15,8 @@ type CreateUserInput struct {
 	Email        string
 	PasswordHash string
 }
+
+type VerifyUserInput struct {
+	Username string
+	Password string
+}

@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"database/sql"
+	"errors"
 )
 
 type UserRepository struct {
@@ -56,4 +57,20 @@ func (r *UserRepository) Create(ctx context.Context, input CreateUserInput) (Use
 	}
 
 	return u, nil
+}
+
+func (r *UserRepository) FindByUsername(ctx context.Context, username string) (*User, error) {
+	var u User
+	err := r.db.QueryRowContext(ctx, "SELECT id, username, email, password_hash, created_at FROM users where username = ?", 
+		username,
+	).Scan(&u.ID, &u.Username, &u.Email, &u.PasswordHash, &u.CreatedAt)
+
+	if(errors.Is(err, sql.ErrNoRows)) {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return &u, nil
 }

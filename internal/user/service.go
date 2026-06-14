@@ -13,14 +13,20 @@ import (
 type userRepository interface {
 	GetAll(ctx context.Context) ([]User, error)
 	Create(ctx context.Context, input CreateUserInput) (User, error)
+	FindByUsername(ctx context.Context, username string) (*User, error)
+}
+
+type authService interface {
+	GenerateToken(userID int64) (string, error)
 }
 
 type UserService struct {
 	repo userRepository
+	authService authService
 }
 
-func NewUserService(repo userRepository) *UserService {
-	return &UserService{repo: repo}
+func NewUserService(repo userRepository, auth authService) *UserService {
+	return &UserService{repo: repo, authService: auth}
 }
 
 func (svc *UserService) GetAllUsers(ctx context.Context) ([]dto.UserResponse, error) {
@@ -59,6 +65,32 @@ func (svc *UserService) RegisterUser(ctx context.Context, req dto.CreateUserRequ
 	return toUserResponse(created), nil
 }
 
+func (svc *UserService) LoginUser(ctx context.Context, req dto.LoginRequest) (dto.LoginResponse, error) {
+	
+	user, err := svc.repo.FindByUsername(ctx, req.Username)
+	if err != nil {
+		return dto.LoginResponse{}, apperror.Internal("something happened")
+	}
+
+	if user == nil {
+		return dto.LoginResponse{}, apperror.Unauthorized("invalid credentials")
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password)); err != nil {
+          return dto.LoginResponse{}, apperror.Unauthorized("invalid credentials")
+      }
+
+	token, tokenErr := svc.authService.GenerateToken(user.ID)
+	if(tokenErr != nil) {
+		return dto.LoginResponse{}, apperror.Internal("error generating token") 
+	}
+
+	return dto.LoginResponse{
+		Token: token,
+		User: toUserResponse(*user),
+	}, nil
+}
+
 func toUserResponse(u User) dto.UserResponse {
 	return dto.UserResponse{
 		ID:        u.ID,
@@ -67,3 +99,5 @@ func toUserResponse(u User) dto.UserResponse {
 		CreatedAt: u.CreatedAt,
 	}
 }
+
+

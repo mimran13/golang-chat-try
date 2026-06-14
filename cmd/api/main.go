@@ -37,7 +37,7 @@ func main() {
 	}
 	defer func() { _ = db.Close() }()
 
-	c := NewContainer(db)
+	c := NewContainer(db, cfg)
 
 	var shuttingDown atomic.Bool
 
