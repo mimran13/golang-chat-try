@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>go-chat — Learning Checklist</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #171a21;
+    --border: #262b36;
+    --text: #e7ebf0;
+    --muted: #8a93a3;
+    --accent: #6ee7b7;
+    --pending: #f59e0b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 40px 24px 80px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; }
+  h1 {
+    font-size: 28px;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .lead {
+    color: var(--muted);
+    margin: 0 0 32px;
+    font-size: 14px;
+  }
+  .legend {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+  .legend span::before {
+    content: "";
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .legend .done::before { background: var(--accent); }
+  .legend .todo::before { background: var(--pending); }
+
+  h2 {
+    font-size: 18px;
+    margin: 32px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 720px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .card h3 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 14px;
+  }
+  li .box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px; height: 16px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    flex: 0 0 auto;
+    margin-top: 3px;
+    font-size: 11px;
+    line-height: 1;
+  }
+  li.done .box {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0f1115;
+  }
+  li.done .box::before { content: "\2713"; font-weight: 700; }
+  li.done .label { color: var(--text); }
+  li.todo .label { color: var(--muted); }
+  .note {
+    color: var(--muted);
+    font-size: 12px;
+    margin-left: 6px;
+  }
+  footer {
+    margin-top: 48px;
+    color: var(--muted);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>go-chat — Learning Checklist</h1>
+  <p class="lead">Ticked items are what we've already touched building the boilerplate + auth. Unticked items are ahead of us, needed for the WebSocket chat app.</p>
+
+  <div class="legend">
+    <span class="done">Learned</span>
+    <span class="todo">Ahead of us</span>
+  </div>
+
+  <h2>Go language concepts</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Basics, values &amp; types</h3>
+      <ul>
+        <li class="done"><span class="box"></span><span class="label">Packages &amp; imports</span></li>
+        <li class="done"><span class="box"></span><span class="label">Zero values (all types)</span></li>
+        <li class="done"><span class="box"></span><span class="label">Structs &amp; struct tags</span></li>
+        <li class="done"><span class="box"></span><span class="label">Pointers &amp; pointer receivers</span></li>
+        <li class="done"><span class="box"></span><span class="label">Methods on named types</span></li>
+        <li class="done"><span class="box"></span><span class="label">Type assertions (<code>x.(T)</code>, comma-ok)</span></li>
+        <li class="done"><span class="box"></span><span class="label">Custom named types (<code>type ctxKey string</code>)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Value vs pointer semantics (when to pick)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Type conversions vs assertions</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Type aliases (<code>type A = B</code>) vs defined types</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Comparable types &amp; struct comparability</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Anonymous structs &amp; composite literals</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Numeric type sizes (int vs int64, float64)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Struct field alignment / padding</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Strings, bytes, runes</h3>
+      <ul>
+        <li class="todo"><span class="box"></span><span class="label"><code>string</code> is an immutable byte view</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>byte</code> = uint8, <code>rune</code> = int32</span></li>
+        <li class="todo"><span class="box"></span><span class="label">UTF-8 iteration with <code>for range</code> on string</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Indexing string gives bytes, not runes</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>[]byte</code> ↔ <code>string</code> conversion cost</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>strings.Builder</code> for concatenation</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>strconv</code> Atoi / Itoa / ParseInt / FormatInt</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>fmt</code> verbs (%v, %+v, %#v, %q, %T)</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Slices, maps, arrays</h3>
+      <ul>
+        <li class="done"><span class="box"></span><span class="label">Basic slice &amp; map usage</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Array vs slice (fixed vs dynamic)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Slice header: ptr / len / cap</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>append</code> and reallocation semantics</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Slice aliasing gotcha (shared backing array)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Copying with <code>copy()</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label">Preallocating: <code>make([]T, 0, n)</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label">Map comma-ok idiom (<code>v, ok := m[k]</code>)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Map iteration order is random</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Maps not safe for concurrent use</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Deleting from map / nil map behavior</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Constants &amp; iota</h3>
+      <ul>
+        <li class="todo"><span class="box"></span><span class="label"><code>const</code> declarations</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Typed vs untyped constants</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>iota</code> for enums</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>iota</code> bit-shift for flags</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Stringer for enum types</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Control flow &amp; functions</h3>
+      <ul>
+        <li class="done"><span class="box"></span><span class="label">Multiple return values</span></li>
+        <li class="done"><span class="box"></span><span class="label">Defer (LIFO order)</span></li>
+        <li class="done"><span class="box"></span><span class="label">Closures</span></li>
+        <li class="done"><span class="box"></span><span class="label">Function types (middleware factories)</span></li>
+        <li class="done"><span class="box"></span><span class="label">Variadic functions</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Only one loop: <code>for</code> (all forms)</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>for range</code> over slice / map / channel / string</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>switch</code> expression form</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Type switch (<code>switch v := x.(type)</code>)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Labels + labeled break/continue</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Named return values &amp; naked returns</span></li>
+        <li class="todo"><span class="box"></span><span class="label">First-class functions / higher-order</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>init()</code> function</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Loop variable capture gotcha (pre-1.22)</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Interfaces &amp; polymorphism</h3>
+      <ul>
+        <li class="done"><span class="box"></span><span class="label">Consumer-defined, unexported interfaces</span></li>
+        <li class="done"><span class="box"></span><span class="label">Implicit satisfaction</span></li>
+        <li class="done"><span class="box"></span><span class="label">DI via interfaces</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Interface value = (type, value) pair</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Nil interface vs interface holding nil (gotcha)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Empty interface / <code>any</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label">Type switch on interface value</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>io.Reader</code> / <code>io.Writer</code> pattern</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>Stringer</code>, <code>error</code>, <code>fmt.Formatter</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label">"Accept interfaces, return structs"</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Interface embedding</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Struct embedding (composition)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Compile-time interface check (<code>var _ I = (*T)(nil)</code>)</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Errors</h3>
+      <ul>
+        <li class="done"><span class="box"></span><span class="label"><code>error</code> interface</span></li>
+        <li class="done"><span class="box"></span><span class="label">Custom error types (AppError)</span></li>
+        <li class="done"><span class="box"></span><span class="label"><code>errors.As</code> / <code>errors.Is</code></span></li>
+        <li class="done"><span class="box"></span><span class="label">Sentinel errors (<code>var ErrX = errors.New(...)</code>)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Error wrapping with <code>fmt.Errorf("...: %w", err)</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label">Custom <code>Unwrap() error</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>errors.Join</code> for multi-error</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>panic</code> / <code>recover</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label">When to panic vs return error</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>errgroup</code> (goroutine error propagation)</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Concurrency primitives</h3>
+      <ul>
+        <li class="done"><span class="box"></span><span class="label"><code>sync/atomic</code> (atomic.Bool for shutdown)</span></li>
+        <li class="done"><span class="box"></span><span class="label"><code>context.Context</code> propagation</span></li>
+        <li class="done"><span class="box"></span><span class="label">Context cancellation / timeouts</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Goroutines (<code>go f()</code>)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Closure capture in goroutines (gotcha)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Channels: unbuffered vs buffered</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Send / receive / close semantics</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>range</code> over channel</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Channel direction (<code>chan&lt;-</code> / <code>&lt;-chan</code>)</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>select</code> statement</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Nil channel (blocks forever) inside select</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>default:</code> in select for non-blocking</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>sync.Mutex</code> / <code>sync.RWMutex</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>sync.WaitGroup</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>sync.Once</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>sync.Cond</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>sync.Pool</code> (object reuse)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Memory model / happens-before basics</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Race detector (<code>go test -race</code>)</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Concurrency patterns</h3>
+      <ul>
+        <li class="todo"><span class="box"></span><span class="label">Fan-in / fan-out</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Worker pool</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Pipeline (stages linked by channels)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Done-channel cancellation propagation</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Semaphore via buffered channel</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Pub/sub via channel maps</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Rate limiting with <code>time.Ticker</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label">Backpressure on slow consumers</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Goroutine leaks (how to avoid)</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>time.After</code> vs <code>time.NewTimer</code> (leak)</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Standard library</h3>
+      <ul>
+        <li class="done"><span class="box"></span><span class="label"><code>encoding/json</code></span></li>
+        <li class="done"><span class="box"></span><span class="label"><code>net/http</code></span></li>
+        <li class="done"><span class="box"></span><span class="label"><code>database/sql</code></span></li>
+        <li class="done"><span class="box"></span><span class="label"><code>log/slog</code> structured logging</span></li>
+        <li class="done"><span class="box"></span><span class="label"><code>os</code> / <code>os/signal</code> for shutdown</span></li>
+        <li class="done"><span class="box"></span><span class="label"><code>time</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>fmt</code> (Printf verbs, Stringer)</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>strings</code>, <code>strconv</code>, <code>bytes</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>io</code> (Reader, Writer, Closer, Copy, EOF)</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>bufio</code> (Scanner, Reader/Writer)</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>sort</code> package</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>encoding/base64</code>, <code>encoding/hex</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>crypto/rand</code>, <code>crypto/sha256</code>, <code>hmac</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>path/filepath</code>, <code>os/exec</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>flag</code> for CLIs</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>container/list</code>, <code>container/heap</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>math</code>, <code>math/rand</code></span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Testing</h3>
+      <ul>
+        <li class="done"><span class="box"></span><span class="label"><code>testing</code> package basics</span></li>
+        <li class="done"><span class="box"></span><span class="label">testify (assert / require)</span></li>
+        <li class="done"><span class="box"></span><span class="label"><code>httptest</code> for handlers</span></li>
+        <li class="done"><span class="box"></span><span class="label">Hand-written mocks (function-field style)</span></li>
+        <li class="done"><span class="box"></span><span class="label">Build tags (unit vs integration)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Table-driven tests</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>t.Run</code> subtests</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>t.Parallel()</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>t.Helper()</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>t.Cleanup()</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>TestMain</code> for setup/teardown</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Example functions (testable godoc)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Golden files</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Fuzz testing (Go 1.18+)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Benchmarks (<code>b.N</code>, <code>b.ResetTimer</code>)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Coverage (<code>-cover</code>, <code>-coverprofile</code>)</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>go test -race</code> in CI</span></li>
+        <li class="todo"><span class="box"></span><span class="label">testcontainers for real DB tests</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Tooling &amp; workflow</h3>
+      <ul>
+        <li class="done"><span class="box"></span><span class="label">Go modules (go.mod / go.sum)</span></li>
+        <li class="done"><span class="box"></span><span class="label"><code>go build</code> / <code>run</code> / <code>test</code></span></li>
+        <li class="done"><span class="box"></span><span class="label"><code>go mod tidy</code></span></li>
+        <li class="done"><span class="box"></span><span class="label">Makefile targets</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>go vet</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>gofmt</code> / <code>goimports</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>go doc</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>go generate</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label">Cross-compilation (GOOS / GOARCH)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Go workspaces (<code>go.work</code>)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">golangci-lint end-to-end</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>pprof</code> (CPU / heap / goroutine)</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>go tool trace</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label">Delve (<code>dlv</code>) debugger</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Idioms &amp; style</h3>
+      <ul>
+        <li class="done"><span class="box"></span><span class="label">Constructor pattern (<code>NewX</code>)</span></li>
+        <li class="done"><span class="box"></span><span class="label">Layered project layout (/cmd, /internal)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Naming: short, PascalCase exported, camelCase not</span></li>
+        <li class="todo"><span class="box"></span><span class="label">No <code>Get</code> prefix on getters</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Short, consistent receiver names</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Godoc comments (start with identifier)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Zero-value usability</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Small interfaces, small packages</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Composition over inheritance</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Avoid circular imports</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Don't panic in libraries</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Effective Go &amp; Go Code Review Comments</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Memory &amp; performance</h3>
+      <ul>
+        <li class="todo"><span class="box"></span><span class="label">Stack vs heap allocation</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Escape analysis (<code>-gcflags="-m"</code>)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Garbage collector basics (STW pauses)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Slice header internals &amp; aliasing</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Map internals (buckets, load factor)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">String vs <code>[]byte</code> allocation cost</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Preallocating with <code>make</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>sync.Pool</code> for reuse</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Reading pprof profiles</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Benchmark-driven optimization</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Generics (Go 1.18+)</h3>
+      <ul>
+        <li class="todo"><span class="box"></span><span class="label">Type parameters syntax (<code>[T any]</code>)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Type constraints (<code>interface { ... }</code>)</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>comparable</code> constraint</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Underlying type (<code>~int</code>)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Generic containers &amp; helpers</span></li>
+        <li class="todo"><span class="box"></span><span class="label">When NOT to use generics</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Reflection &amp; runtime</h3>
+      <ul>
+        <li class="todo"><span class="box"></span><span class="label"><code>reflect.Type</code> / <code>reflect.Value</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label">Reading struct tags via reflection</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Setting values via reflection</span></li>
+        <li class="todo"><span class="box"></span><span class="label">When NOT to use reflection</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>runtime</code> package basics</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>runtime.GOMAXPROCS</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label">Stack traces / <code>runtime/debug</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>unsafe</code> package (know it exists)</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Common gotchas</h3>
+      <ul>
+        <li class="todo"><span class="box"></span><span class="label">Nil interface vs interface holding nil pointer</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Loop variable capture in goroutines (pre-1.22)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Slice aliasing with <code>append</code></span></li>
+        <li class="todo"><span class="box"></span><span class="label">Ranging over map: random order</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Taking address of map value (illegal)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Deferred function args evaluated eagerly</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Time zones &amp; monotonic clock</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Shadowing with <code>:=</code> inside blocks</span></li>
+        <li class="todo"><span class="box"></span><span class="label"><code>append</code> to shared slice mutates original</span></li>
+        <li class="todo"><span class="box"></span><span class="label">JSON: unexported fields not marshaled</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Web app / backend concepts</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>HTTP layer</h3>
+      <ul>
+        <li class="done"><span class="box"></span><span class="label">net/http server &amp; handlers</span></li>
+        <li class="done"><span class="box"></span><span class="label">chi router &amp; sub-routers</span></li>
+        <li class="done"><span class="box"></span><span class="label">Middleware chain</span></li>
+        <li class="done"><span class="box"></span><span class="label">Route groups (public vs protected)</span></li>
+        <li class="done"><span class="box"></span><span class="label">API versioning (/api/v1)</span></li>
+        <li class="done"><span class="box"></span><span class="label">CORS</span></li>
+        <li class="done"><span class="box"></span><span class="label">Request body limits</span></li>
+        <li class="done"><span class="box"></span><span class="label">Request timeouts</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Architecture</h3>
+      <ul>
+        <li class="done"><span class="box"></span><span class="label">Layered architecture (handler / service / repo)</span></li>
+        <li class="done"><span class="box"></span><span class="label">DTOs vs domain models</span></li>
+        <li class="done"><span class="box"></span><span class="label">Repository pattern</span></li>
+        <li class="done"><span class="box"></span><span class="label">Dependency injection container</span></li>
+        <li class="done"><span class="box"></span><span class="label">Constructor pattern (NewX)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Strict DDD (aggregates, value objects, events)</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Validation &amp; errors</h3>
+      <ul>
+        <li class="done"><span class="box"></span><span class="label">go-playground/validator</span></li>
+        <li class="done"><span class="box"></span><span class="label">Standardized error envelope</span></li>
+        <li class="done"><span class="box"></span><span class="label">Field-level validation errors</span></li>
+        <li class="done"><span class="box"></span><span class="label">Success envelope with meta</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Auth &amp; security</h3>
+      <ul>
+        <li class="done"><span class="box"></span><span class="label">bcrypt password hashing</span></li>
+        <li class="done"><span class="box"></span><span class="label">JWT signing (HS256)</span></li>
+        <li class="done"><span class="box"></span><span class="label">JWT parsing &amp; verification</span></li>
+        <li class="done"><span class="box"></span><span class="label">Auth middleware (Bearer header)</span></li>
+        <li class="done"><span class="box"></span><span class="label">User ID injected into context</span></li>
+        <li class="done"><span class="box"></span><span class="label">Username enumeration prevention</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Refresh tokens</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Token revocation (denylist)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Password reset flow</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Rate limit per user (not just IP)</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Observability &amp; lifecycle</h3>
+      <ul>
+        <li class="done"><span class="box"></span><span class="label">Request ID middleware</span></li>
+        <li class="done"><span class="box"></span><span class="label">Structured logging (slog)</span></li>
+        <li class="done"><span class="box"></span><span class="label">Health check endpoint</span></li>
+        <li class="done"><span class="box"></span><span class="label">Graceful shutdown (SIGTERM)</span></li>
+        <li class="done"><span class="box"></span><span class="label">Shutdown middleware (503 draining)</span></li>
+        <li class="done"><span class="box"></span><span class="label">Rate limiting (token bucket)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Metrics (Prometheus)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Distributed tracing (OpenTelemetry)</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Database</h3>
+      <ul>
+        <li class="done"><span class="box"></span><span class="label">database/sql driver setup</span></li>
+        <li class="done"><span class="box"></span><span class="label">Connection pool tuning</span></li>
+        <li class="done"><span class="box"></span><span class="label">Context-aware queries (QueryContext)</span></li>
+        <li class="done"><span class="box"></span><span class="label">Migrations (golang-migrate)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Transactions (BEGIN / COMMIT / ROLLBACK)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Prepared statements</span></li>
+        <li class="todo"><span class="box"></span><span class="label">N+1 avoidance / JOINs</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Indexes &amp; query plans</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>WebSockets (chat core)</h3>
+      <ul>
+        <li class="todo"><span class="box"></span><span class="label">HTTP → WebSocket upgrade handshake</span></li>
+        <li class="todo"><span class="box"></span><span class="label">gorilla/websocket or nhooyr/websocket</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Read pump / write pump goroutines</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Ping / pong keepalive</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Message framing (text vs binary)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Backpressure on slow clients</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Origin check (CSRF for WS)</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Chat domain</h3>
+      <ul>
+        <li class="todo"><span class="box"></span><span class="label">Hub pattern (central goroutine)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Client abstraction</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Rooms / channels</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Room membership &amp; ACL</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Message persistence</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Message history endpoint (REST)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Presence (online / offline)</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Typing indicators</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Read receipts</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Unread counts</span></li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Scaling &amp; ops</h3>
+      <ul>
+        <li class="todo"><span class="box"></span><span class="label">Redis pub/sub for multi-instance broadcast</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Sticky sessions vs shared state</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Docker / docker-compose</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Config for multi-env deploys</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Reverse proxy (nginx) &amp; WS proxying</span></li>
+        <li class="todo"><span class="box"></span><span class="label">Horizontal scaling of WS servers</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    Open this file in a browser: <code>open docs/learning-checklist.html</code>. Update as we tick off more.
+  </footer>
+</div>
+</body>
+</html>
