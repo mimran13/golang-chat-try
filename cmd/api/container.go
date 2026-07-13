@@ -12,6 +12,7 @@ import (
 type Container struct {
 	HealthHandler *handler.HealthHandler
 	UserHandler   *handler.UserHandler
+	AuthService   *auth.AuthService
 }
 
 func NewContainer(db *sql.DB, config *config.Config) *Container {
@@ -23,5 +24,6 @@ func NewContainer(db *sql.DB, config *config.Config) *Container {
 	return &Container{
 		HealthHandler: healthHandler,
 		UserHandler:   handler.NewUserHandler(userSvc),
+		AuthService:   authService,
 	}
 }

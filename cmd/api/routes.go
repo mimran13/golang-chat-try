@@ -35,9 +35,13 @@ func setupRoutes(c *Container, shuttingDown *atomic.Bool, allowedOrigins []strin
 	r.Get("/health", c.HealthHandler.Health)
 
 	r.Route("/api/v1", func(r chi.Router) {
-		r.Get("/users", c.UserHandler.GetAll)
 		r.Post("/auth/register", c.UserHandler.CreateUser)
-		 r.Post("/auth/login", c.UserHandler.LoginUser)
+		r.Post("/auth/login", c.UserHandler.LoginUser)
+
+		r.Group(func(r chi.Router) {
+			r.Use(middlewares.AuthMiddleware(c.AuthService))
+			r.Get("/users", c.UserHandler.GetAll)
+		})
 	})
 
 	return r
