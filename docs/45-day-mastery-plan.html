@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>go-chat — 45-Day Mastery Plan</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #171a21;
+    --panel-2: #1e2230;
+    --border: #262b36;
+    --text: #e7ebf0;
+    --muted: #8a93a3;
+    --accent: #6ee7b7;
+    --pending: #f59e0b;
+    --danger: #f87171;
+    --link: #93c5fd;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 40px 24px 80px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  h1 {
+    font-size: 30px;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+  }
+  h2 {
+    font-size: 20px;
+    margin: 40px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  h3 {
+    font-size: 15px;
+    margin: 0 0 8px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+  a { color: var(--link); }
+  code {
+    background: #23283299;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 13px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+  }
+  .lead {
+    color: var(--muted);
+    margin: 0 0 8px;
+    font-size: 14px;
+  }
+  .callout {
+    background: var(--panel);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 16px 0 32px;
+    font-size: 14px;
+  }
+  .callout strong { color: var(--accent); }
+
+  .phase {
+    margin: 40px 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+  }
+  .phase-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+  .phase-head .tag {
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--panel-2);
+    padding: 3px 8px;
+    border-radius: 999px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .phase-head h2 {
+    border: none;
+    margin: 0;
+    padding: 0;
+    font-size: 22px;
+  }
+  .phase-why {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 4px 0 20px;
+  }
+
+  .days {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 800px) { .days { grid-template-columns: 1fr; } }
+
+  .day {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .day-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .day-num {
+    background: var(--accent);
+    color: #0f1115;
+    font-weight: 700;
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+  .day-title {
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .day ul {
+    list-style: none;
+    padding: 0;
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .day ul li {
+    padding: 3px 0;
+    padding-left: 14px;
+    position: relative;
+  }
+  .day ul li::before {
+    content: "\2013";
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+  }
+  .day .deliverable {
+    margin-top: 10px;
+    padding: 8px 10px;
+    background: #10141c;
+    border-radius: 5px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .day .deliverable strong { color: var(--accent); }
+
+  .rules {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 20px 0 30px;
+  }
+  @media (max-width: 800px) { .rules { grid-template-columns: 1fr; } }
+  .rule {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 14px;
+  }
+  .rule strong { color: var(--accent); display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 13px;
+  }
+  th, td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  th { color: var(--muted); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; }
+
+  .resource-list {
+    columns: 2;
+    column-gap: 24px;
+    font-size: 13px;
+  }
+  @media (max-width: 800px) { .resource-list { columns: 1; } }
+  .resource-list ul { padding-left: 18px; margin: 0; }
+  .resource-list li { padding: 3px 0; }
+
+  footer {
+    margin-top: 48px;
+    color: var(--muted);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>go-chat — 45-Day Production Mastery Plan</h1>
+  <p class="lead">From "solid Go boilerplate" → "I can ship and operate a production-grade Go service and understand every layer."</p>
+
+  <div class="callout">
+    <strong>North star</strong> — <code>go-chat</code> deployed to a real cloud environment: WebSockets, multi-instance scaling, observability, CI/CD, secrets, load-tested, hardened. Plus a personal notes doc per phase.
+    <br /><br />
+    See also: <a href="./learning-checklist.html">learning-checklist.html</a> · <a href="../boilerplate-checklist.md">boilerplate-checklist.md</a>
+  </div>
+
+  <h2>Ground rules</h2>
+  <div class="rules">
+    <div class="rule"><strong>Daily rhythm ~2.5–3h</strong>20 min read → 90 min code → 20 min notes → 10 min tick checklist. Adjust honestly if a day is shorter.</div>
+    <div class="rule"><strong>Never skip the notes</strong>They are the compound interest. No notes, no memory. <code>docs/notes-YYYY-MM-DD.md</code>.</div>
+    <div class="rule"><strong>Commits are small</strong>One commit per topic minimum. Not one giant commit at end of week.</div>
+    <div class="rule"><strong>Stuck &gt; 30 min? Ask.</strong>Write what you tried first, then ask. Don't burn a day.</div>
+    <div class="rule"><strong>Weekly review Sunday</strong>Re-open checklist + notes. Redo shaky items. Update the progress log.</div>
+    <div class="rule"><strong>Non-negotiables</strong>Never merge red CI. Never "come back to that later" without writing it down.</div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head">
+      <span class="tag">Phase 1 · Days 1–8</span>
+      <h2>Go language fluency</h2>
+    </div>
+    <p class="phase-why">The chat app will beat concurrency into you. But language basics you have to seek out. Do them first while your fingers are fresh.</p>
+
+    <div class="days">
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 1</span><span class="day-title">Basics, values, types</span></div>
+        <ul>
+          <li>Zero values for every type — print them all.</li>
+          <li>Value vs pointer semantics: <code>Counter</code> struct example.</li>
+          <li>Type conversion vs type assertion.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — <code>scratch/day01_types.go</code> + notes.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 2</span><span class="day-title">Strings, bytes, runes</span></div>
+        <ul>
+          <li>UTF-8 iterate with <code>for i, r := range s</code> vs <code>s[i]</code>.</li>
+          <li><code>[]byte</code> ↔ <code>string</code> alloc cost, measure with <code>-benchmem</code>.</li>
+          <li><code>strings.Builder</code> in action.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — <code>scratch/day02_strings_test.go</code> with a benchmark.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 3</span><span class="day-title">Slices, maps, arrays</span></div>
+        <ul>
+          <li>Slice header (ptr, len, cap) — observe with <code>cap()</code>.</li>
+          <li>Reproduce slice aliasing gotcha with <code>append</code>.</li>
+          <li>Map random iteration order.</li>
+          <li>Benchmark prealloc vs grow.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — <code>scratch/day03_slice_gotchas_test.go</code>.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 4</span><span class="day-title">Constants, iota, enums</span></div>
+        <ul>
+          <li>Model chat <code>MessageType</code> with <code>iota</code>.</li>
+          <li>Add <code>String()</code> — become a <code>Stringer</code>.</li>
+          <li>Bit-shift <code>iota</code> for <code>RoomPermission</code> flags.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — <code>internal/message/type.go</code>.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 5</span><span class="day-title">Interfaces deep dive</span></div>
+        <ul>
+          <li>Study existing <code>internal/user/service.go</code> patterns.</li>
+          <li>Nil-interface-vs-holding-nil trap. Reproduce it.</li>
+          <li><code>io.Reader</code>/<code>io.Writer</code> in a hasher.</li>
+          <li>Compile-time check <code>var _ I = (*T)(nil)</code> added to repo.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — repo gains compile-time checks + trap notes.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 6</span><span class="day-title">Errors mastered</span></div>
+        <ul>
+          <li>Wrap all repo errors with <code>fmt.Errorf(&quot;...: %w&quot;, err)</code>.</li>
+          <li>Add <code>Unwrap()</code> to <code>AppError</code>.</li>
+          <li><code>errors.Join</code> for multi-field validation errors.</li>
+          <li>Read the Go 1.13 errors blog post.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — wrapped errors in repo, tests still green.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 7</span><span class="day-title">Control flow &amp; closures</span></div>
+        <ul>
+          <li>Type switch: <code>func describe(x any)</code>.</li>
+          <li>Named returns + <code>defer</code> to annotate errors.</li>
+          <li>First-class fn: compose middlewares.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — <code>internal/middlewares/compose.go</code>.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 8</span><span class="day-title">Generics</span></div>
+        <ul>
+          <li><code>SliceMap[T,U any](in []T, f func(T) U) []U</code>.</li>
+          <li><code>KeysOf[K comparable, V any](m map[K]V) []K</code>.</li>
+          <li>Read the Go generics tutorial.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — <code>internal/genericutil/</code> used in repo.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head">
+      <span class="tag">Phase 2 · Days 9–14</span>
+      <h2>Concurrency deep dive</h2>
+    </div>
+    <p class="phase-why">Learn concurrency in isolated programs <em>before</em> wiring it into WebSockets. So when the hub explodes, you know why.</p>
+
+    <div class="days">
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 9</span><span class="day-title">Goroutines + closure capture</span></div>
+        <ul>
+          <li>Reproduce classic loop-var capture bug.</li>
+          <li>Fix by shadowing / passing as arg.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — <code>scratch/day09_goroutines_test.go</code>.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 10</span><span class="day-title">Channels: unbuffered vs buffered</span></div>
+        <ul>
+          <li>Producer/consumer, unbuffered.</li>
+          <li>Same, buffered — measure timing.</li>
+          <li><code>range</code> + <code>close</code> semantics.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — notes on when buffering helps vs hurts.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 11</span><span class="day-title">select + nil channel + default</span></div>
+        <ul>
+          <li>3-case <code>select</code>.</li>
+          <li>Set case to <code>nil</code> to disable dynamically.</li>
+          <li><code>default:</code> for non-blocking.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — small "event router" program.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 12</span><span class="day-title">Sync primitives</span></div>
+        <ul>
+          <li>Race a counter → fix with <code>Mutex</code>. Run <code>-race</code>.</li>
+          <li>Benchmark <code>RWMutex</code> readers vs writers.</li>
+          <li><code>WaitGroup</code> fan-out.</li>
+          <li><code>sync.Once</code> lazy init.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — benchmarks committed.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 13</span><span class="day-title">Concurrency patterns</span></div>
+        <ul>
+          <li>Worker pool.</li>
+          <li>Pipeline.</li>
+          <li>Fan-in merge.</li>
+          <li>Done-channel cancel.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — <code>scratch/day13_patterns/</code>, one file per pattern.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 14</span><span class="day-title">Context + goroutine leaks</span></div>
+        <ul>
+          <li>Wire <code>context.Context</code> into worker pool.</li>
+          <li>Cause a leak; detect with <code>runtime.NumGoroutine()</code>; fix it.</li>
+          <li>Read Go blog: "Concurrency Patterns: Context".</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — "how to detect goroutine leaks" note.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head">
+      <span class="tag">Phase 3 · Days 15–22</span>
+      <h2>WebSocket chat core</h2>
+    </div>
+    <p class="phase-why">Concurrency final exam. Everything above gets applied here.</p>
+
+    <div class="days">
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 15</span><span class="day-title">WebSocket handshake</span></div>
+        <ul>
+          <li>Pick one lib — commit. <code>nhooyr.io/websocket</code> or <code>gorilla/websocket</code>.</li>
+          <li><code>GET /api/v1/ws</code> behind auth middleware.</li>
+          <li>Echo server.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — working authed echo WS.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 16</span><span class="day-title">Client abstraction</span></div>
+        <ul>
+          <li>One <code>Client</code>: <code>readPump</code> + <code>writePump</code>.</li>
+          <li><code>send chan []byte</code> buffered between them.</li>
+          <li>Write deadlines, close on error.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — <code>internal/chat/client.go</code>.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 17</span><span class="day-title">Hub pattern</span></div>
+        <ul>
+          <li>Central <code>Hub</code> goroutine.</li>
+          <li>Channels: register / unregister / broadcast.</li>
+          <li>Two tabs → both receive.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — <code>internal/chat/hub.go</code>, working broadcast.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 18</span><span class="day-title">Rooms</span></div>
+        <ul>
+          <li>Migrations: <code>rooms</code>, <code>room_members</code>.</li>
+          <li>Endpoints: create, join, list.</li>
+          <li>Hub tracks clients-per-room. Room-scoped broadcast.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — rooms end-to-end, auth enforced.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 19</span><span class="day-title">Message persistence</span></div>
+        <ul>
+          <li><code>messages</code> table.</li>
+          <li>Save before broadcast.</li>
+          <li><code>GET /rooms/:id/messages?before=&amp;limit=</code>.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — history endpoint + integration test.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 20</span><span class="day-title">Ping/pong + backpressure</span></div>
+        <ul>
+          <li>Server pings every 30s; drop on missed pong.</li>
+          <li>If client's <code>send</code> full → drop them, don't stall hub.</li>
+          <li>Read gorilla WS chat example.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — chaos test: slow client can't stall hub.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 21</span><span class="day-title">Presence</span></div>
+        <ul>
+          <li>Redis <code>SET user:{id}:online 1 EX 30</code>.</li>
+          <li><code>GET /rooms/:id/presence</code>.</li>
+          <li>Fallback: in-memory presence map.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — presence visible via curl.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 22</span><span class="day-title">Local load test</span></div>
+        <ul>
+          <li>500 concurrent WS via k6 or a Go script.</li>
+          <li>Watch <code>runtime.NumGoroutine()</code>, memory.</li>
+          <li>Fix leaks / panics.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — notes on max conns your machine handles.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head">
+      <span class="tag">Phase 4 · Days 23–38</span>
+      <h2>Production infrastructure</h2>
+    </div>
+    <p class="phase-why">This turns "a Go program" into "a service."</p>
+
+    <div class="days">
+      <div class="day">
+        <div class="day-head"><span class="day-num">Days 23–24</span><span class="day-title">Docker + compose</span></div>
+        <ul>
+          <li>Multi-stage Dockerfile + <code>distroless</code> runtime.</li>
+          <li>compose: app + MySQL + Redis.</li>
+          <li><code>make up</code> / <code>make down</code>.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — <code>docker compose up</code> gives you the whole stack.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Days 25–26</span><span class="day-title">CI (GitHub Actions)</span></div>
+        <ul>
+          <li>On PR: <code>vet</code>, lint, <code>test -race</code>, build.</li>
+          <li>On main: image push to GHCR.</li>
+          <li>Cache Go modules.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — green CI badge in README.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Days 27–28</span><span class="day-title">sqlc adoption</span></div>
+        <ul>
+          <li>Replace <code>FindByUsername</code> with sqlc.</li>
+          <li>Understand SQL-as-source-of-truth.</li>
+          <li>Migrate the rest.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — whole <code>user</code> repo via sqlc.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Days 29–30</span><span class="day-title">testcontainers</span></div>
+        <ul>
+          <li>Real MySQL in tests. Kill DB mocks.</li>
+          <li>Run in CI too.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — <code>make test-integration</code> uses testcontainers.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Days 31–32</span><span class="day-title">Metrics (Prometheus)</span></div>
+        <ul>
+          <li>Request count, latency histogram, WS connections, goroutines.</li>
+          <li><code>/metrics</code> endpoint.</li>
+          <li>Local Grafana via compose.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — live dashboard.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Days 33–34</span><span class="day-title">Tracing (OpenTelemetry)</span></div>
+        <ul>
+          <li>Trace HTTP → service → repo → DB.</li>
+          <li>Export to Jaeger container.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — flame graph of a login request.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 35</span><span class="day-title">Log shipping</span></div>
+        <ul>
+          <li>slog JSON handler.</li>
+          <li>Trace ID + request ID in every log line.</li>
+          <li>Loki + Grafana Explore.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — logs correlated with traces.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Days 36–37</span><span class="day-title">Redis for real scaling</span></div>
+        <ul>
+          <li>Pub/sub for cross-instance WS broadcast.</li>
+          <li>Redis-backed rate limiter.</li>
+          <li>JWT denylist in Redis.</li>
+          <li>Two instances behind nginx.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — 2 instances, chat works across them.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 38</span><span class="day-title">Secrets + config hardening</span></div>
+        <ul>
+          <li>Kill <code>.env</code> in prod path.</li>
+          <li>Validator panics on missing/invalid config at boot.</li>
+          <li><code>/livez</code> vs <code>/readyz</code> split.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — shutdown flips readyz to 503 while draining.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-head">
+      <span class="tag">Phase 5 · Days 39–45</span>
+      <h2>Deploy, load-test, harden</h2>
+    </div>
+    <p class="phase-why">Ship it. Break it. Fix it. Show it off.</p>
+
+    <div class="days">
+      <div class="day">
+        <div class="day-head"><span class="day-num">Days 39–40</span><span class="day-title">Deploy to real cloud</span></div>
+        <ul>
+          <li>Fly.io / Railway / GKE / EKS — pick one.</li>
+          <li>Managed MySQL + Redis.</li>
+          <li>Real domain, TLS.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — public URL, curl from your phone.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Days 41–42</span><span class="day-title">Serious load test</span></div>
+        <ul>
+          <li>k6 script: HTTP + WS mixed traffic, ramp up.</li>
+          <li>Find breaking point. Read metrics + traces.</li>
+          <li>Fix the first bottleneck (usually missing index).</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — load-test report with graphs.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 43</span><span class="day-title">Security pass</span></div>
+        <ul>
+          <li>Security headers middleware.</li>
+          <li>JWT key rotation via <code>kid</code>.</li>
+          <li>Run <code>gosec</code> + <code>govulncheck</code>.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — findings + fixes report.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 44</span><span class="day-title">Documentation pass</span></div>
+        <ul>
+          <li>README: architecture diagram, run + deploy.</li>
+          <li>OpenAPI generated.</li>
+          <li>3 ADRs for key choices.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — anyone can clone + run in 10 min.</div>
+      </div>
+
+      <div class="day">
+        <div class="day-head"><span class="day-num">Day 45</span><span class="day-title">Portfolio + retro</span></div>
+        <ul>
+          <li>5-min video walkthrough.</li>
+          <li>Public repo + blog post.</li>
+          <li>Personal retro doc.</li>
+        </ul>
+        <div class="deliverable"><strong>Deliverable</strong> — shareable link + retro.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Weekly review ritual (Sundays)</h2>
+  <ol>
+    <li>Re-open <a href="./learning-checklist.html">learning-checklist.html</a>. Tick what you covered.</li>
+    <li>Re-read the week's <code>notes-*.md</code>. Anything that made you go "wait, why?" → add to next week.</li>
+    <li>Skim closed items — can you rubber-duck them in 2 minutes? If not, revisit.</li>
+    <li>Update the progress log below.</li>
+  </ol>
+
+  <h2>Progress log</h2>
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Day</th><th>Delivered</th><th>Blockers</th><th>Next</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>2026-07-14</td><td>0</td><td>Plan committed</td><td>—</td><td>Day 1: types</td></tr>
+      <tr><td></td><td></td><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Resources (bookmark, don't drown)</h2>
+  <div class="resource-list">
+    <ul>
+      <li><em>The Go Programming Language</em> — Donovan &amp; Kernighan</li>
+      <li><em>100 Go Mistakes and How to Avoid Them</em> — Teiva Harsanyi</li>
+      <li><a href="https://go.dev/doc/effective_go">Effective Go</a></li>
+      <li><a href="https://github.com/golang/go/wiki/CodeReviewComments">Go Code Review Comments</a></li>
+      <li><a href="https://www.ardanlabs.com/blog/">Ardan Labs blog (Bill Kennedy)</a></li>
+      <li><a href="https://dave.cheney.net/">Dave Cheney's blog</a></li>
+      <li><a href="https://github.com/uber-go/guide">Uber Go Style Guide</a></li>
+      <li><a href="https://www.youtube.com/watch?v=f6kdp27TYZs">Go Concurrency Patterns (Rob Pike)</a></li>
+    </ul>
+  </div>
+
+  <footer>
+    Open in browser: <code>open docs/45-day-mastery-plan.html</code>. This file is committed. Update the progress log daily.
+  </footer>
+</div>
+</body>
+</html>
