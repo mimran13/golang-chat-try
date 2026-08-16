@@ -41,6 +41,9 @@ func setupRoutes(c *Container, shuttingDown *atomic.Bool, allowedOrigins []strin
 		r.Group(func(r chi.Router) {
 			r.Use(middlewares.AuthMiddleware(c.AuthService))
 			r.Get("/users", c.UserHandler.GetAll)
+			r.Post("/rooms", c.RoomHandler.CreateRoom)
+			r.Get("/rooms", c.RoomHandler.ListRooms)
+			r.Post("/rooms/{id}/members", c.RoomHandler.AddMember)
 		})
 	})
 
